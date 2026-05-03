@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KJ to Calories Converter for Australian Food Labels</title>
+  <meta name="description" content="Everything you need to know about converting kJ to calories when reading Australian food labels — formula, chart, tips and more." />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream: #faf7f2;
+      --warm: #f3ede3;
+      --paper: #fffdf9;
+      --ink: #1a1611;
+      --ink2: #3d3830;
+      --ink3: #6b6358;
+      --ink4: #9e9589;
+      --green: #2d6a4f;
+      --green-light: #d8f3dc;
+      --green-mid: #52b788;
+      --orange: #c2481b;
+      --orange-light: #fde8df;
+      --gold: #b5820a;
+      --gold-light: #fef3cd;
+      --border: #e8e1d6;
+      --border2: #d4cbbf;
+      --shadow: rgba(26,22,17,0.08);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--cream);
+      color: var(--ink);
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-size: 18px;
+      line-height: 1.8;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── HEADER ── */
+    .site-header {
+      background: var(--ink);
+      padding: 0.75rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .site-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 15px;
+      color: #fff;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      text-decoration: none;
+    }
+
+    .site-tag {
+      font-size: 12px;
+      color: var(--ink4);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      background: var(--ink);
+      padding: 5rem 2rem 4rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(82,183,136,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-kicker {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--green-mid);
+      margin-bottom: 1.25rem;
+      font-family: 'Source Serif 4', serif;
+    }
+
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 900;
+      color: #fff;
+      line-height: 1.15;
+      max-width: 800px;
+      margin: 0 auto 1.5rem;
+      letter-spacing: -0.5px;
+    }
+
+    .hero-sub {
+      font-size: 17px;
+      color: #b0a99e;
+      max-width: 560px;
+      margin: 0 auto 2rem;
+      font-style: italic;
+      font-weight: 300;
+    }
+
+    .hero-links {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--green-mid);
+      color: #fff;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      font-family: 'Source Serif 4', serif;
+      padding: 10px 22px;
+      border-radius: 4px;
+      letter-spacing: 0.3px;
+      transition: background 0.2s;
+    }
+
+    .btn-primary:hover { background: #40916c; }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: transparent;
+      color: #b0a99e;
+      text-decoration: none;
+      font-size: 14px;
+      border: 1px solid #3d3830;
+      padding: 10px 22px;
+      border-radius: 4px;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .btn-secondary:hover { border-color: #b0a99e; color: #fff; }
+
+    /* ── CONVERTER WIDGET ── */
+    .converter-strip {
+      background: var(--green);
+      padding: 2rem;
+    }
+
+    .converter-inner {
+      max-width: 600px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .converter-label {
+      font-family: 'Playfair Display', serif;
+      font-size: 16px;
+      color: var(--green-light);
+      flex-shrink: 0;
+    }
+
+    .converter-inputs {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+      min-width: 260px;
+    }
+
+    .conv-input {
+      flex: 1;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 4px;
+      color: #fff;
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      font-weight: 700;
+      padding: 10px 14px;
+      outline: none;
+      text-align: center;
+      transition: border-color 0.2s;
+    }
+
+    .conv-input::placeholder { color: rgba(255,255,255,0.4); font-size: 15px; font-weight: 400; }
+    .conv-input:focus { border-color: rgba(255,255,255,0.6); background: rgba(255,255,255,0.18); }
+
+    .conv-arrow {
+      color: var(--green-light);
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    .conv-result {
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 4px;
+      color: #fff;
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      font-weight: 700;
+      padding: 10px 14px;
+      min-width: 100px;
+      text-align: center;
+    }
+
+    .conv-unit { color: rgba(255,255,255,0.6); font-size: 13px; margin-top: 4px; text-align: center; }
+
+    /* ── MAIN LAYOUT ── */
+    .main-wrap {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 3.5rem 2rem;
+    }
+
+    /* ── SECTIONS ── */
+    .section { margin-bottom: 3.5rem; }
+
+    .section-label {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 1.25rem;
+    }
+
+    .section-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--ink4);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .section-line { flex: 1; height: 1px; background: var(--border); }
+
+    h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1.25;
+      margin-bottom: 1rem;
+      letter-spacing: -0.3px;
+    }
+
+    h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--ink);
+      margin: 1.5rem 0 0.5rem;
+    }
+
+    p { margin-bottom: 1.1rem; color: var(--ink2); }
+    p:last-child { margin-bottom: 0; }
+
+    /* ── FORMULA BOX ── */
+    .formula-box {
+      background: var(--paper);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--green);
+      border-radius: 6px;
+      padding: 1.25rem 1.5rem;
+      margin: 1.25rem 0;
+    }
+
+    .formula-box .formula-main {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--green);
+      margin-bottom: 0.3rem;
+    }
+
+    .formula-box .formula-alt {
+      font-size: 15px;
+      color: var(--ink3);
+      font-style: italic;
+    }
+
+    /* ── TABLES ── */
+    .table-wrap { overflow-x: auto; margin: 1.25rem 0; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 15px;
+    }
+
+    thead tr {
+      background: var(--ink);
+      color: #fff;
+    }
+
+    thead th {
+      padding: 11px 14px;
+      text-align: left;
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.3px;
+    }
+
+    tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
+    tbody tr:hover { background: var(--warm); }
+    tbody tr:nth-child(even) { background: var(--warm); }
+    tbody tr:nth-child(even):hover { background: #ede8de; }
+
+    td {
+      padding: 10px 14px;
+      color: var(--ink2);
+    }
+
+    td:first-child { font-weight: 400; color: var(--ink); }
+    td:last-child { font-family: 'Playfair Display', serif; font-weight: 700; color: var(--green); font-size: 16px; }
+
+    .table-note {
+      font-size: 13px;
+      color: var(--ink4);
+      font-style: italic;
+      margin-top: 8px;
+    }
+
+    /* ── STEPS ── */
+    .steps { display: flex; flex-direction: column; gap: 1rem; margin: 1.25rem 0; }
+
+    .step-card {
+      display: flex;
+      gap: 1rem;
+      background: var(--paper);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem;
+    }
+
+    .step-num-circle {
+      width: 36px; height: 36px;
+      background: var(--ink);
+      color: #fff;
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-size: 15px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .step-body { flex: 1; }
+    .step-title { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 15px; color: var(--ink); margin-bottom: 4px; }
+    .step-desc { font-size: 15px; color: var(--ink3); line-height: 1.6; margin: 0; }
+
+    /* ── TIPS ── */
+    .tips-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 1.25rem 0; }
+
+    .tip-card {
+      background: var(--paper);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem 1.1rem;
+    }
+
+    .tip-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--green);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .tip-title { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 15px; color: var(--ink); margin-bottom: 6px; }
+    .tip-desc { font-size: 14px; color: var(--ink3); line-height: 1.6; margin: 0; }
+    .tip-desc a { color: var(--green); text-decoration: none; }
+    .tip-desc a:hover { text-decoration: underline; }
+
+    /* ── FAQ ── */
+    .faq-list { display: flex; flex-direction: column; gap: 0; margin: 1.25rem 0; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+
+    .faq-item { border-bottom: 1px solid var(--border); }
+    .faq-item:last-child { border-bottom: none; }
+
+    .faq-q {
+      width: 100%; background: var(--paper); border: none; cursor: pointer;
+      text-align: left; padding: 1rem 1.25rem;
+      font-family: 'Playfair Display', serif; font-weight: 700; font-size: 15px;
+      color: var(--ink); display: flex; align-items: center; justify-content: space-between;
+      gap: 10px; transition: background 0.15s;
+    }
+
+    .faq-q:hover { background: var(--warm); }
+    .faq-q.open { background: var(--warm); color: var(--green); }
+
+    .faq-icon { font-size: 18px; flex-shrink: 0; transition: transform 0.2s; color: var(--ink4); }
+    .faq-q.open .faq-icon { transform: rotate(45deg); color: var(--green); }
+
+    .faq-a {
+      max-height: 0; overflow: hidden;
+      transition: max-height 0.3s ease, padding 0.2s;
+      background: var(--cream);
+      font-size: 15px; color: var(--ink3); line-height: 1.7;
+      padding: 0 1.25rem;
+    }
+
+    .faq-a.open { max-height: 200px; padding: 0.75rem 1.25rem 1rem; }
+
+    /* ── CALLOUT ── */
+    .callout {
+      background: var(--gold-light);
+      border: 1px solid #e6cc7a;
+      border-radius: 8px;
+      padding: 1.1rem 1.4rem;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      margin: 1.5rem 0;
+    }
+
+    .callout-icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+    .callout-text { font-size: 15px; color: #5a4000; line-height: 1.65; margin: 0; }
+    .callout-text strong { color: var(--gold); }
+    .callout-text a { color: var(--gold); font-weight: 600; }
+
+    /* ── EXAMPLE BOX ── */
+    .example-box {
+      background: var(--orange-light);
+      border: 1px solid #f5c0aa;
+      border-radius: 8px;
+      padding: 1.1rem 1.4rem;
+      margin: 1rem 0;
+      font-size: 15px;
+      color: #5c2000;
+    }
+
+    .example-box strong { color: var(--orange); }
+
+    /* ── DIVIDER ── */
+    .ornament {
+      text-align: center;
+      color: var(--border2);
+      font-size: 20px;
+      letter-spacing: 8px;
+      margin: 2rem 0;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--ink);
+      color: var(--ink4);
+      text-align: center;
+      padding: 2.5rem 2rem;
+      font-size: 14px;
+    }
+
+    footer a { color: var(--green-mid); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+    footer .footer-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      color: #fff;
+      margin-bottom: 0.5rem;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero h1, .hero-sub, .hero-links, .hero-kicker {
+      animation: fadeUp 0.6s ease both;
+    }
+
+    .hero-kicker { animation-delay: 0.05s; }
+    .hero h1 { animation-delay: 0.15s; }
+    .hero-sub { animation-delay: 0.25s; }
+    .hero-links { animation-delay: 0.35s; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+      .tips-grid { grid-template-columns: 1fr; }
+      .converter-inner { flex-direction: column; }
+      .hero { padding: 3.5rem 1.25rem 3rem; }
+      .main-wrap { padding: 2.5rem 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Site Header -->
+<header class="site-header">
+  <a href="http://kjtocalories.com" class="site-logo">kjtocalories.com</a>
+  <span class="site-tag">Australian Nutrition Guide</span>
+</header>
+
+<!-- Hero -->
+<section class="hero">
+  <span class="hero-kicker">Australian Food Labels · Energy Guide</span>
+  <h1>KJ to Calories Converter for Australian Food Labels</h1>
+  <p class="hero-sub">Everything you need to know about converting kilojoules to calories — with a live calculator, formula, charts and practical tips.</p>
+  <div class="hero-links">
+    <a href="http://kjtocalories.com" class="btn-primary">&#9889; Open Full Converter</a>
+    <a href="https://medium.com/@annabelle57645/how-to-convert-kj-to-calories-manually-complete-guide-d7747029ad4c" target="_blank" class="btn-secondary">Read Manual Guide on Medium &rarr;</a>
+  </div>
+</section>
+
+<!-- Live Converter Strip -->
+<div class="converter-strip">
+  <div class="converter-inner">
+    <span class="converter-label">Quick Convert:</span>
+    <div class="converter-inputs">
+      <div>
+        <input class="conv-input" type="number" id="kj-in" placeholder="Enter kJ" oninput="convertKJ()" />
+        <div class="conv-unit">kilojoules (kJ)</div>
+      </div>
+      <span class="conv-arrow">&#8594;</span>
+      <div>
+        <div class="conv-result" id="cal-out">—</div>
+        <div class="conv-unit">calories (kcal)</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Main Content -->
+<main class="main-wrap">
+
+  <!-- Introduction -->
+  <section class="section">
+    <p>If you've ever picked up a packet of biscuits at Woolworths or checked the nutrition panel on your favourite yoghurt, you've probably noticed that Australian food labels display energy in <strong>kilojoules (kJ)</strong> — not calories. For many people tracking their diet or trying to lose weight, this can be confusing. Most of us think in calories, yet Australian labels speak in kilojoules.</p>
+    <p>This article explains everything you need to know about converting kJ to calories when reading Australian food labels. For a quick and easy online tool, visit <a href="http://kjtocalories.com" style="color:var(--green);font-weight:600;">kjtocalories.com</a> — and if you want a deeper dive into the manual conversion method, check out this detailed guide on Medium: <a href="https://medium.com/@annabelle57645/how-to-convert-kj-to-calories-manually-complete-guide-d7747029ad4c" target="_blank" style="color:var(--green);font-weight:600;">How to Convert KJ to Calories Manually — Complete Guide</a>.</p>
+  </section>
+
+  <div class="ornament">&#9670; &nbsp; &#9670; &nbsp; &#9670;</div>
+
+  <!-- Why Australia -->
+  <section class="section">
+    <div class="section-label">
+      <span class="section-num">01</span>
+      <div class="section-line"></div>
+    </div>
+    <h2>Why Does Australia Use Kilojoules Instead of Calories?</h2>
+    <p>Australia follows the <strong>International System of Units (SI)</strong>, which uses the joule as the standard unit of energy. Since food energy is measured in thousands of joules, the kilojoule (kJ) is the official unit used on all Australian and New Zealand food labels, as required by <strong>Food Standards Australia New Zealand (FSANZ)</strong>.</p>
+    <p>In contrast, the United States, United Kingdom, and many other countries use kilocalories (kcal) — commonly just called "calories" — on their food packaging. So when an American recipe says a meal is "500 calories," an Australian label for the same meal would read approximately <strong>2,092 kJ</strong>.</p>
+    <p>Neither unit is better or more accurate — they simply measure the same thing in different scales.</p>
+  </section>
+
+  <!-- Formula -->
+  <section class="section">
+    <div class="section-label">
+      <span class="section-num">02</span>
+      <div class="section-line"></div>
+    </div>
+    <h2>The Simple Conversion Formula</h2>
+    <p>Converting kJ to calories is straightforward. There are two versions depending on which type of "calorie" you mean:</p>
+
+    <h3>1. Kilojoules to Kilocalories (kcal) — the most common</h3>
+    <div class="formula-box">
+      <div class="formula-main">Calories (kcal) = Kilojoules ÷ 4.184</div>
+      <div class="formula-alt">Or for a quick mental estimate: Calories ≈ Kilojoules ÷ 4.2</div>
+    </div>
+
+    <h3>2. Kilojoules to small calories (cal) — rarely used in nutrition</h3>
+    <div class="formula-box">
+      <div class="formula-main">cal = Kilojoules ÷ 0.004184</div>
+    </div>
+
+    <p>For everyday diet and nutrition purposes, always use the <strong>÷ 4.2</strong> formula. When people say "calories" in the context of food and dieting, they almost always mean kilocalories (kcal). You can also use the free converter at <a href="http://kjtocalories.com" style="color:var(--green);font-weight:600;">kjtocalories.com</a> to do this instantly without any math.</p>
+  </section>
+
+  <!-- Chart -->
+  <section class="section">
+    <div class="section-label">
+      <span class="section-num">03</span>
+      <div class="section-line"></div>
+    </div>
+    <h2>Quick Reference: KJ to Calories Chart</h2>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Kilojoules (kJ)</th>
+            <th>Calories (kcal)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>100 kJ</td><td>24 cal</td></tr>
+          <tr><td>200 kJ</td><td>48 cal</td></tr>
+          <tr><td>400 kJ</td><td>96 cal</td></tr>
+          <tr><td>500 kJ</td><td>119 cal</td></tr>
+          <tr><td>600 kJ</td><td>143 cal</td></tr>
+          <tr><td>800 kJ</td><td>191 cal</td></tr>
+          <tr><td>1,000 kJ</td><td>239 cal</td></tr>
+          <tr><td>1,500 kJ</td><td>358 cal</td></tr>
+          <tr><td>2,000 kJ</td><td>478 cal</td></tr>
+          <tr><td>2,500 kJ</td><td>597 cal</td></tr>
+          <tr><td>3,000 kJ</td><td>717 cal</td></tr>
+          <tr><td>4,000 kJ</td><td>956 cal</td></tr>
+          <tr><td>5,000 kJ</td><td>1,195 cal</td></tr>
+          <tr><td>8,700 kJ</td><td>2,079 cal</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="table-note">&#9432; 8,700 kJ is the average daily energy intake recommended for Australian adults — roughly equivalent to 2,080 calories per day.</p>
+  </section>
+
+  <!-- How to Read Label -->
+  <section class="section">
+    <div class="section-label">
+      <span class="section-num">04</span>
+      <div class="section-line"></div>
+    </div>
+    <h2>How to Read an Australian Food Label</h2>
+    <p>Australian nutrition panels are regulated by FSANZ and must follow a standard format. Here's what to look for:</p>
+
+    <div class="steps">
+      <div class="step-card">
+        <div class="step-num-circle">1</div>
+        <div class="step-body">
+          <div class="step-title">Find the Energy Row</div>
+          <p class="step-desc">The nutrition panel always lists <strong>Energy</strong> in kJ (and sometimes kcal alongside it). It shows two columns: <em>Per Serving</em> and <em>Per 100g</em>.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num-circle">2</div>
+        <div class="step-body">
+          <div class="step-title">Check the Serving Size</div>
+          <p class="step-desc">This is where many people get caught out. A label might say "serving size: 30g" with 540 kJ per serving — but if you eat 60g, you're consuming 1,080 kJ (~257 calories).</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num-circle">3</div>
+        <div class="step-body">
+          <div class="step-title">Convert Using the Formula</div>
+          <p class="step-desc">Divide the kJ value by 4.2. Or head to <a href="http://kjtocalories.com" style="color:var(--green);font-weight:600;">kjtocalories.com</a> for an instant result.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-num-circle">4</div>
+        <div class="step-body">
+          <div class="step-title">Use Per 100g for Comparisons</div>
+          <p class="step-desc">When comparing two brands of yoghurt, always use the <strong>per 100g</strong> column — serving sizes can differ between brands.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="example-box">
+      <strong>Example:</strong> A muesli bar shows <strong>820 kJ per serve</strong><br />
+      820 ÷ 4.2 = <strong>~195 calories</strong>
+    </div>
+  </section>
+
+  <!-- Common Foods -->
+  <section class="section">
+    <div class="section-label">
+      <span class="section-num">05</span>
+      <div class="section-line"></div>
+    </div>
+    <h2>Common Australian Foods: KJ &amp; Calorie Values</h2>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Food</th>
+            <th>Approx. kJ</th>
+            <th>Approx. Calories</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Vegemite toast (2 slices)</td><td>600 kJ</td><td>143 cal</td></tr>
+          <tr><td>Tim Tam biscuit (1)</td><td>394 kJ</td><td>94 cal</td></tr>
+          <tr><td>Weet-Bix (2 biscuits, no milk)</td><td>580 kJ</td><td>138 cal</td></tr>
+          <tr><td>Flat white coffee (regular)</td><td>670 kJ</td><td>160 cal</td></tr>
+          <tr><td>Meat pie (1 individual)</td><td>1,800 kJ</td><td>429 cal</td></tr>
+          <tr><td>Avocado (half)</td><td>690 kJ</td><td>165 cal</td></tr>
+          <tr><td>Banana (medium)</td><td>380 kJ</td><td>91 cal</td></tr>
+          <tr><td>Chicken schnitzel (100g)</td><td>900 kJ</td><td>215 cal</td></tr>
+          <tr><td>Lamington (1 piece)</td><td>800 kJ</td><td>191 cal</td></tr>
+          <tr><td>Full-fat milk (250ml)</td><td>670 kJ</td><td>160 cal</td></tr>
+          <tr><td>Bundaberg Ginger Beer (375ml)</td><td>780 kJ</td><td>186 cal</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Daily Requirements -->
+  <section class="section">
+    <div class="section-label">
+      <span class="section-num">06</span>
+      <div class="section-line"></div>
+    </div>
+    <h2>Daily Kilojoule Recommendations in Australia</h2>
+    <p>According to <strong>FSANZ and the Australian Dietary Guidelines</strong>, average daily energy requirements are:</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Group</th>
+            <th>Daily kJ</th>
+            <th>Daily Calories</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Adult women (moderately active)</td><td>8,700 kJ</td><td>~2,079 cal</td></tr>
+          <tr><td>Adult men (moderately active)</td><td>10,900 kJ</td><td>~2,602 cal</td></tr>
+          <tr><td>Children (5–8 years)</td><td>6,000–7,000 kJ</td><td>~1,433–1,671 cal</td></tr>
+          <tr><td>Teenagers (14–18 years)</td><td>9,000–12,000 kJ</td><td>~2,149–2,866 cal</td></tr>
+          <tr><td>Older adults (70+)</td><td>7,200–8,500 kJ</td><td>~1,719–2,031 cal</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout">
+      <span class="callout-icon">&#9888;</span>
+      <p class="callout-text">These are <strong>general averages</strong>. Your actual requirements depend on age, weight, height, activity level, and health goals. Always consult a registered dietitian or GP for personalised advice.</p>
+    </div>
+  </section>
+
+  <!-- Tips -->
+  <section class="section">
+    <div class="section-label">
+      <span class="section-num">07</span>
+      <div class="section-line"></div>
+    </div>
+    <h2>Tips for Shopping Smarter in Australia</h2>
+
+    <div class="tips-grid">
+      <div class="tip-card">
+        <div class="tip-num">Tip 01</div>
+        <div class="tip-title">Use an online converter</div>
+        <p class="tip-desc">Visit <a href="http://kjtocalories.com">kjtocalories.com</a> — type in the kJ value and get the calorie equivalent instantly. No math required.</p>
+      </div>
+      <div class="tip-card">
+        <div class="tip-num">Tip 02</div>
+        <div class="tip-title">Learn the manual method</div>
+        <p class="tip-desc">This <a href="https://medium.com/@annabelle57645/how-to-convert-kj-to-calories-manually-complete-guide-d7747029ad4c" target="_blank">Medium guide</a> walks through the formula in plain language with practical examples.</p>
+      </div>
+      <div class="tip-card">
+        <div class="tip-num">Tip 03</div>
+        <div class="tip-title">Use the Health Star Rating</div>
+        <p class="tip-desc">A higher Health Star Rating (1–5 stars) generally means a more nutritious choice relative to its energy content.</p>
+      </div>
+      <div class="tip-card">
+        <div class="tip-num">Tip 04</div>
+        <div class="tip-title">Download a tracking app</div>
+        <p class="tip-desc">MyFitnessPal, Easy Diet Diary, and Cronometer all let you switch between kJ and calories.</p>
+      </div>
+      <div class="tip-card">
+        <div class="tip-num">Tip 05</div>
+        <div class="tip-title">Memorise the ÷ 4.2 trick</div>
+        <p class="tip-desc">Just divide kJ by 4 for a quick rough estimate. 1,200 kJ ÷ 4 = 300 cal (real answer: 286).</p>
+      </div>
+      <div class="tip-card">
+        <div class="tip-num">Tip 06</div>
+        <div class="tip-title">Don't just track energy</div>
+        <p class="tip-desc">500 kJ from almonds is very different from 500 kJ from lollies. Always check protein, fibre, and saturated fat too.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section">
+    <div class="section-label">
+      <span class="section-num">08</span>
+      <div class="section-line"></div>
+    </div>
+    <h2>Frequently Asked Questions</h2>
+
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFAQ(this)">
+          Is 1 kJ the same as 1 calorie?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          No. 1 kilocalorie (kcal) = 4.184 kJ. Kilojoules are a much smaller unit — it takes about 4 of them to equal 1 calorie.
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFAQ(this)">
+          Why do some Australian labels show both kJ and kcal?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          FSANZ requires kJ to be listed, but manufacturers may voluntarily include kcal to help consumers who are more familiar with calories — particularly for products marketed internationally.
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFAQ(this)">
+          How many kJ is 2,000 calories?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          2,000 calories (kcal) × 4.184 = 8,368 kJ — roughly in line with the standard 8,700 kJ daily recommendation for Australian adults.
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFAQ(this)">
+          Are kilojoules the same as kilocalories?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          No. Kilocalories (kcal) are the "calories" used in everyday diet talk. Kilojoules (kJ) are the SI unit of energy. 1 kcal = 4.184 kJ.
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFAQ(this)">
+          Should I track kJ or calories in Australia?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          Whichever you find easier to understand consistently. Most Australian dietitians and apps support both. If you need to switch between units quickly, kjtocalories.com makes it effortless.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Disclaimer -->
+  <p style="font-size:13px;color:var(--ink4);font-style:italic;border-top:1px solid var(--border);padding-top:1.5rem;">
+    Always consult a qualified healthcare professional or registered dietitian before making significant changes to your diet.
+  </p>
+
+</main>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-logo">kjtocalories.com</div>
+  <p style="margin-bottom:0.5rem;">Your Australian kJ to Calories resource &nbsp;·&nbsp; <a href="http://kjtocalories.com">Open Full Converter</a></p>
+  <p>Also read: <a href="https://medium.com/@annabelle57645/how-to-convert-kj-to-calories-manually-complete-guide-d7747029ad4c" target="_blank">How to Convert KJ to Calories Manually</a> on Medium</p>
+</footer>
+
+<script>
+  function convertKJ() {
+    const val = parseFloat(document.getElementById('kj-in').value);
+    const out = document.getElementById('cal-out');
+    if (!isNaN(val) && val >= 0) {
+      out.textContent = Math.round(val / 4.184);
+    } else {
+      out.textContent = '—';
+    }
+  }
+
+  function toggleFAQ(btn) {
+    const answer = btn.nextElementSibling;
+    const isOpen = answer.classList.contains('open');
+    document.querySelectorAll('.faq-a').forEach(a => a.classList.remove('open'));
+    document.querySelectorAll('.faq-q').forEach(q => q.classList.remove('open'));
+    if (!isOpen) {
+      answer.classList.add('open');
+      btn.classList.add('open');
+    }
+  }
+</script>
+
+</body>
+</html>
